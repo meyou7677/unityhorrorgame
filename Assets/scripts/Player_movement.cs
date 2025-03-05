@@ -8,6 +8,7 @@ public class Player_movement : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float groundDrag;
+    [SerializeField] private float JumpForce;
     [Header("ground detection")]
     [SerializeField] private float playerHeight;
     [SerializeField] private LayerMask groundMask;
@@ -24,13 +25,32 @@ public class Player_movement : MonoBehaviour
         _rb.freezeRotation = true;
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, Vector3.down * playerHeight * 0.5f);
+    }
+
+
     // Update is called once per frame
+
+
     void Update()
     {
-        _isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundMask);
+        _isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 10f, groundMask);
+        Debug.Log(_isGrounded);
         InputManager();
         SpeedControl();
         _rb.drag = _isGrounded ? groundDrag : 0f;
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (_isGrounded)
+            {
+                _rb.AddForce(new Vector3(0, JumpForce, 0), ForceMode.Impulse);
+            }
+            
+        }
+
         
     }
     private void InputManager()
