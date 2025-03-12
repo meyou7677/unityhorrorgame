@@ -37,8 +37,7 @@ public class Player_movement : MonoBehaviour
 
     void Update()
     {
-        _isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 10f, groundMask);
-        Debug.Log(_isGrounded);
+        _isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.5f, groundMask);
         InputManager();
         SpeedControl();
         _rb.drag = _isGrounded ? groundDrag : 0f;
