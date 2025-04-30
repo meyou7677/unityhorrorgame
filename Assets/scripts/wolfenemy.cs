@@ -10,7 +10,14 @@ public class wolfenemy : MonoBehaviour
     public float running_speed;
     private GameObject myplayer;
     public float attackD;
-
+    public float randomPointDistance;
+    public Vector3? randomPoint = null;
+    private lineOfSight raycastPoint;
+    public enum enemyStates 
+    {
+        chase, patrol, attack, die
+    }
+    public enemyStates enemyState = enemyStates.patrol;
     
     // Start is called before the first frame update
     void Start()
@@ -18,26 +25,29 @@ public class wolfenemy : MonoBehaviour
         animator = GetComponent<Animator>();
         myplayer = GameObject.FindGameObjectWithTag("Player");
         rb = GetComponent<Rigidbody>();
+        raycastPoint = GetComponentInChildren<lineOfSight>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 direction = myplayer.transform.position - transform.position;
-        Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
-        if (newdirection.magnitude > attackD) 
+        
+        switch (enemyState)
         {
-            Vector3 target = transform.position + newdirection;
-            transform.LookAt(target);
-            rb.AddForce(newdirection.normalized, ForceMode.Impulse);
-            SpeedControl();
-
+            case enemyStates.chase:
+                ChaseState();
+                break;
+            case enemyStates.patrol:
+                PatrolState();
+                break;
+            case enemyStates.attack:
+                AttackState();
+                break;
+            case enemyStates.die:
+                DieState();
+                break;
         }
-        else
-        {
-            rb.velocity = Vector3.zero;
-            animator.SetTrigger("attack");
-        }
+        
         
 
     }
@@ -48,5 +58,86 @@ public class wolfenemy : MonoBehaviour
         if (!(flatVelocity.magnitude > walking_speed)) return;
         var limitedVelocity = flatVelocity.normalized * walking_speed;
         rb.velocity = new Vector3(limitedVelocity.x, rb.velocity.y, limitedVelocity.z);
+    }
+
+    private void ChaseState()
+    {
+        Vector3 direction = myplayer.transform.position - transform.position;
+        Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
+        if (newdirection.magnitude > attackD) 
+        {
+            Vector3 target = transform.position + newdirection;
+            transform.LookAt(target);
+            rb.AddForce(newdirection.normalized, ForceMode.Impulse);
+            SpeedControl();
+        
+        }
+        else
+        {
+            enemyState = enemyStates.attack;
+            animator.SetTrigger("attack");
+        }
+    }
+
+    private void PatrolState()
+    {
+        if (randomPoint == null)
+        {
+            randomPoint = new Vector3(Random.Range(20, randomPointDistance), 0, Random.Range(20, randomPointDistance));
+        }
+        else
+        {
+            Vector3 direction = randomPoint.Value - transform.position;
+            Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
+            Vector3 target = transform.position + newdirection;
+            transform.LookAt(target);
+            rb.AddForce(newdirection.normalized, ForceMode.Impulse);
+            SpeedControl();
+            if (direction.magnitude < 0.5)
+            {
+                randomPoint = null;
+            }
+        }
+        RaycastHit? HitInfo = raycastPoint.Castray();
+        if (HitInfo != null)
+        {
+            
+            if (HitInfo.Value.collider.gameObject.tag == "Player")
+            {
+                enemyState = enemyStates.chase;
+            }
+        }
+    }
+
+    private void AttackState()
+    {
+       
+        Vector3 direction = myplayer.transform.position - transform.position;
+        Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
+        if (newdirection.magnitude > attackD)
+        {
+            enemyState = enemyStates.chase;
+            animator.SetTrigger("chase");
+
+        }
+        else
+        {
+            rb.velocity = Vector3.zero;
+            
+        }
+    }
+
+    private void DieState()
+    {
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (randomPoint != null)
+        {
+            Gizmos.DrawCube(randomPoint.Value, new Vector3 (1, 1, 1));
+        }
+        
     }
 }
