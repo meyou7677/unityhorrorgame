@@ -62,14 +62,32 @@ public class wolfenemy : MonoBehaviour
 
     private void ChaseState()
     {
+        RaycastHit? HitInfo = raycastPoint.Castray();
+        if (HitInfo != null)
+        {
+            Debug.Log(HitInfo.Value.collider.gameObject.name);
+            if (HitInfo.Value.collider.gameObject.tag != "Player")
+            {
+                animator.SetTrigger("walk");
+                enemyState = enemyStates.patrol;
+                return;
+            }
+        }
         Vector3 direction = myplayer.transform.position - transform.position;
         Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
+        
         if (newdirection.magnitude > attackD) 
         {
+            if (newdirection.magnitude > raycastPoint.sightDistance * 1.5)
+            {
+                animator.SetTrigger("walk");
+                enemyState = enemyStates.patrol;
+            }
             Vector3 target = transform.position + newdirection;
             transform.LookAt(target);
             rb.AddForce(newdirection.normalized, ForceMode.Impulse);
             SpeedControl();
+            
         
         }
         else
@@ -81,12 +99,15 @@ public class wolfenemy : MonoBehaviour
 
     private void PatrolState()
     {
+
         if (randomPoint == null)
         {
+            
             randomPoint = new Vector3(Random.Range(20, randomPointDistance), 0, Random.Range(20, randomPointDistance));
         }
         else
         {
+
             Vector3 direction = randomPoint.Value - transform.position;
             Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
             Vector3 target = transform.position + newdirection;
@@ -104,6 +125,11 @@ public class wolfenemy : MonoBehaviour
             
             if (HitInfo.Value.collider.gameObject.tag == "Player")
             {
+                Vector3 direction = myplayer.transform.position - transform.position;
+                float angle = Vector3.Angle(transform.forward,direction);
+                Debug.Log(angle);
+                animator.SetTrigger("chase");
+                
                 enemyState = enemyStates.chase;
             }
         }
@@ -117,6 +143,7 @@ public class wolfenemy : MonoBehaviour
         if (newdirection.magnitude > attackD)
         {
             enemyState = enemyStates.chase;
+            
             animator.SetTrigger("chase");
 
         }
