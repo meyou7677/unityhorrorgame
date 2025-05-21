@@ -127,7 +127,6 @@ public class wolfenemy : MonoBehaviour
             {
                 Vector3 direction = myplayer.transform.position - transform.position;
                 float angle = Vector3.Angle(transform.forward,direction);
-                Debug.Log(angle);
                 animator.SetTrigger("chase");
                 
                 enemyState = enemyStates.chase;
