@@ -25,7 +25,8 @@ public class player : MonoBehaviour
             var bc = b.GetComponent<bullet>();
             if (bc != null)
             {
-                bc.shoot(transform.forward, bulletSpeed);
+                bc.Initialize();
+                bc.shoot(Camera.main.transform.forward, bulletSpeed);
             }
         }
     }

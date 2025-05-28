@@ -13,6 +13,8 @@ public class wolfenemy : MonoBehaviour
     public float randomPointDistance;
     public Vector3? randomPoint = null;
     private lineOfSight raycastPoint;
+    public float health;
+    private bool hasdied = false;
     public enum enemyStates 
     {
         chase, patrol, attack, die
@@ -155,7 +157,13 @@ public class wolfenemy : MonoBehaviour
 
     private void DieState()
     {
-
+        rb.velocity = Vector3.zero;
+        if (!hasdied)
+        {
+            hasdied = true;
+            animator.SetTrigger("die");
+        }
+        
     }
 
     private void OnDrawGizmos()
@@ -165,5 +173,17 @@ public class wolfenemy : MonoBehaviour
             Gizmos.DrawCube(randomPoint.Value, new Vector3 (1, 1, 1));
         }
         
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "bullet")
+        {
+            health -= 1;
+            if (health <= 0 && !hasdied)
+            {
+                enemyState = enemyStates.die;
+            }
+        }
     }
 }
