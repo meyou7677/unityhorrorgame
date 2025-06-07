@@ -8,18 +8,26 @@ public class player : MonoBehaviour
     GameObject m_shootpoint;
     public GameObject bullet_prefab;
     public float bulletSpeed;
+    private float m_shoottimer;
+    public float shootcooldown;
     // Start is called before the first frame update
     void Start()
     {
         m_torch = GameObject.FindObjectOfType<torch>();
         m_shootpoint = GameObject.Find("shoot point");
+        m_shoottimer = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (m_shoottimer > 0)
         {
+            m_shoottimer -= Time.deltaTime;
+        }
+        if (Input.GetMouseButtonDown(0) && m_shoottimer <= 0)
+        {
+            m_shoottimer = shootcooldown;
             GameObject b = GameObject.Instantiate(bullet_prefab);
             b.transform.position = m_shootpoint.transform.position;
             var bc = b.GetComponent<bullet>();

@@ -506,7 +506,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 272987206}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: orientation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1854,7 +1854,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 119
+    m_Bits: 375
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -2079,7 +2079,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1178400893}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Camerapos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3144,7 +3144,7 @@ GameObject:
   - component: {fileID: 1891674801}
   - component: {fileID: 1891674800}
   - component: {fileID: 1891674799}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: player obj
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -3543,7 +3543,7 @@ GameObject:
   - component: {fileID: 2096334292}
   - component: {fileID: 2096334296}
   - component: {fileID: 2096334295}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -3617,7 +3617,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bullet_prefab: {fileID: 6685220458054937860, guid: 5ceb160414471784191f059c4048c190, type: 3}
-  bulletSpeed: 10
+  bulletSpeed: 500
 --- !u!136 &2096334296
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4098,6 +4098,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 308609846, guid: 96e5cc370fab0fd4783e03bf7708d6be, type: 3}
+      propertyPath: health
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1560039680717472214, guid: 96e5cc370fab0fd4783e03bf7708d6be, type: 3}
       propertyPath: m_Name
       value: Wolfboss_A

@@ -5,16 +5,17 @@ TagManager:
   serializedVersion: 2
   tags:
   - battery
+  - bullet
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - player
   - Water
   - UI
   - Ground Layer
   - laser gun
-  - 
+  - bullet
   - 
   - 
   - 

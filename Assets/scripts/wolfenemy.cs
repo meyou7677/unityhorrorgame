@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class wolfenemy : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class wolfenemy : MonoBehaviour
     private lineOfSight raycastPoint;
     public float health;
     private bool hasdied = false;
+    private NavMeshAgent m_NavMeshAgent;
     public enum enemyStates 
     {
         chase, patrol, attack, die
@@ -28,6 +30,7 @@ public class wolfenemy : MonoBehaviour
         myplayer = GameObject.FindGameObjectWithTag("Player");
         rb = GetComponent<Rigidbody>();
         raycastPoint = GetComponentInChildren<lineOfSight>();
+        m_NavMeshAgent = GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
@@ -87,7 +90,7 @@ public class wolfenemy : MonoBehaviour
             }
             Vector3 target = transform.position + newdirection;
             transform.LookAt(target);
-            rb.AddForce(newdirection.normalized, ForceMode.Impulse);
+            rb.AddForce(newdirection.normalized * running_speed, ForceMode.Impulse);
             SpeedControl();
             
         
@@ -109,18 +112,21 @@ public class wolfenemy : MonoBehaviour
         }
         else
         {
+            m_NavMeshAgent.SetDestination(randomPoint.Value);
+           
+            //Vector3 direction = randomPoint.Value - transform.position;
+           //Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
+           //Vector3 target = transform.position + newdirection;
+           //transform.LookAt(target);
+           //rb.AddForce(newdirection.normalized * walking_speed, ForceMode.Impulse);
+           //SpeedControl();
+            //if (direction.magnitude < 0.5)
+            //{
+           //     randomPoint = null;
+           // }
 
-            Vector3 direction = randomPoint.Value - transform.position;
-            Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
-            Vector3 target = transform.position + newdirection;
-            transform.LookAt(target);
-            rb.AddForce(newdirection.normalized, ForceMode.Impulse);
-            SpeedControl();
-            if (direction.magnitude < 0.5)
-            {
-                randomPoint = null;
-            }
         }
+        return;
         RaycastHit? HitInfo = raycastPoint.Castray();
         if (HitInfo != null)
         {
@@ -179,11 +185,19 @@ public class wolfenemy : MonoBehaviour
     {
         if (other.tag == "bullet")
         {
-            health -= 1;
+            if (health > 0)
+            {
+                animator.SetTrigger("chase");
+                enemyState = enemyStates.chase;
+                health -= 1;
+            }
+            
+            
             if (health <= 0 && !hasdied)
             {
                 enemyState = enemyStates.die;
             }
+
         }
     }
 }
