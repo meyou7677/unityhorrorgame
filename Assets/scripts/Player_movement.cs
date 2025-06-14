@@ -40,7 +40,7 @@ public class Player_movement : MonoBehaviour
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.5f, groundMask);
         InputManager();
         SpeedControl();
-        _rb.drag = _isGrounded ? groundDrag : 0f;
+        _rb.linearDamping = _isGrounded ? groundDrag : 0f;
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (_isGrounded)
@@ -70,11 +70,11 @@ public class Player_movement : MonoBehaviour
     }
     private void SpeedControl()
     {
-        var velocity = _rb.velocity;
+        var velocity = _rb.linearVelocity;
         var flatVelocity = new Vector3(velocity.x, 0f, velocity.z);
         if (!(flatVelocity.magnitude > moveSpeed)) return;
         var limitedVelocity = flatVelocity.normalized * moveSpeed;
-        _rb.velocity = new Vector3 (limitedVelocity.x, _rb.velocity.y, limitedVelocity.z);
+        _rb.linearVelocity = new Vector3 (limitedVelocity.x, _rb.linearVelocity.y, limitedVelocity.z);
     }
 
 

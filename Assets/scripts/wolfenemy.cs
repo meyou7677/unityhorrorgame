@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -58,11 +59,11 @@ public class wolfenemy : MonoBehaviour
     }
     private void SpeedControl()
     {
-        var velocity = rb.velocity;
+        var velocity = rb.linearVelocity;
         var flatVelocity = new Vector3(velocity.x, 0f, velocity.z);
         if (!(flatVelocity.magnitude > walking_speed)) return;
         var limitedVelocity = flatVelocity.normalized * walking_speed;
-        rb.velocity = new Vector3(limitedVelocity.x, rb.velocity.y, limitedVelocity.z);
+        rb.linearVelocity = new Vector3(limitedVelocity.x, rb.linearVelocity.y, limitedVelocity.z);
     }
 
     private void ChaseState()
@@ -109,21 +110,25 @@ public class wolfenemy : MonoBehaviour
         {
             
             randomPoint = new Vector3(Random.Range(20, randomPointDistance), 0, Random.Range(20, randomPointDistance));
+            NavMeshHit hit;
+            NavMesh.SamplePosition(randomPoint.Value, out hit, 20, 1);
+            randomPoint = hit.position;
+            m_NavMeshAgent.SetDestination(randomPoint.Value);
         }
         else
         {
-            m_NavMeshAgent.SetDestination(randomPoint.Value);
+            
            
-            //Vector3 direction = randomPoint.Value - transform.position;
-           //Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
-           //Vector3 target = transform.position + newdirection;
+            Vector3 direction = randomPoint.Value - transform.position;
+           Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
+           Vector3 target = transform.position + newdirection;
            //transform.LookAt(target);
            //rb.AddForce(newdirection.normalized * walking_speed, ForceMode.Impulse);
            //SpeedControl();
-            //if (direction.magnitude < 0.5)
-            //{
-           //     randomPoint = null;
-           // }
+            if (direction.magnitude < 0.5)
+            {
+                randomPoint = null;
+            }
 
         }
         return;
@@ -156,14 +161,14 @@ public class wolfenemy : MonoBehaviour
         }
         else
         {
-            rb.velocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
             
         }
     }
 
     private void DieState()
     {
-        rb.velocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
         if (!hasdied)
         {
             hasdied = true;
