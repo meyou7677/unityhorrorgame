@@ -15,7 +15,7 @@ public class Player_movement : MonoBehaviour
     [SerializeField] private Transform orientation;
     private float _horizontalMovement;
     private float _verticalMovement;
-    private bool _isGrounded;
+    public bool _isGrounded;
     private Vector3 _moveDirection;
     private Rigidbody _rb;
     // Start is called before the first frame update
@@ -37,7 +37,7 @@ public class Player_movement : MonoBehaviour
 
     void Update()
     {
-        _isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.5f, groundMask);
+        _isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.75f, groundMask);
         InputManager();
         SpeedControl();
         _rb.linearDamping = _isGrounded ? groundDrag : 0f;

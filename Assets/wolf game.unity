@@ -128,6 +128,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 694855954112513087, guid: f7582267339530f4d8f3c068ddb6a0bc, type: 3}
+      propertyPath: health
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 694855954112513087, guid: f7582267339530f4d8f3c068ddb6a0bc, type: 3}
       propertyPath: randomPointDistance
       value: 100
       objectReference: {fileID: 0}
@@ -468,6 +472,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: player
       objectReference: {fileID: 0}
+    - target: {fileID: 2148095141965965344, guid: 5bbc446e79bcdbb428b194187410a89e, type: 3}
+      propertyPath: bulletSpeed
+      value: 10000
+      objectReference: {fileID: 0}
     - target: {fileID: 4882338353709539196, guid: 5bbc446e79bcdbb428b194187410a89e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -33.72
@@ -509,8 +517,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9101699300223614784, guid: 5bbc446e79bcdbb428b194187410a89e, type: 3}
+      propertyPath: JumpForce
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9101699300223614784, guid: 5bbc446e79bcdbb428b194187410a89e, type: 3}
       propertyPath: moveSpeed
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

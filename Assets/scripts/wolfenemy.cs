@@ -68,6 +68,7 @@ public class wolfenemy : MonoBehaviour
 
     private void ChaseState()
     {
+        m_NavMeshAgent.SetDestination(myplayer.transform.position);
         RaycastHit? HitInfo = raycastPoint.Castray();
         if (HitInfo != null)
         {
@@ -86,13 +87,14 @@ public class wolfenemy : MonoBehaviour
         {
             if (newdirection.magnitude > raycastPoint.sightDistance * 1.5)
             {
+                randomPoint = null;
                 animator.SetTrigger("walk");
                 enemyState = enemyStates.patrol;
             }
             Vector3 target = transform.position + newdirection;
             transform.LookAt(target);
-            rb.AddForce(newdirection.normalized * running_speed, ForceMode.Impulse);
-            SpeedControl();
+            //rb.AddForce(newdirection.normalized * running_speed, ForceMode.Impulse);
+            //SpeedControl();
             
         
         }
@@ -111,9 +113,10 @@ public class wolfenemy : MonoBehaviour
             
             randomPoint = new Vector3(Random.Range(20, randomPointDistance), 0, Random.Range(20, randomPointDistance));
             NavMeshHit hit;
-            NavMesh.SamplePosition(randomPoint.Value, out hit, 20, 1);
+            NavMesh.SamplePosition(randomPoint.Value, out hit, 1000, 1);
             randomPoint = hit.position;
             m_NavMeshAgent.SetDestination(randomPoint.Value);
+            Debug.Log("Destination set " + randomPoint.Value);
         }
         else
         {
@@ -131,7 +134,6 @@ public class wolfenemy : MonoBehaviour
             }
 
         }
-        return;
         RaycastHit? HitInfo = raycastPoint.Castray();
         if (HitInfo != null)
         {
@@ -140,8 +142,9 @@ public class wolfenemy : MonoBehaviour
             {
                 Vector3 direction = myplayer.transform.position - transform.position;
                 float angle = Vector3.Angle(transform.forward,direction);
+                randomPoint = null;
                 animator.SetTrigger("chase");
-                
+                m_NavMeshAgent.SetDestination(myplayer.transform.position);
                 enemyState = enemyStates.chase;
             }
         }
@@ -173,6 +176,7 @@ public class wolfenemy : MonoBehaviour
         {
             hasdied = true;
             animator.SetTrigger("die");
+            m_NavMeshAgent.isStopped = true;
         }
         
     }
