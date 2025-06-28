@@ -133,7 +133,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 694855954112513087, guid: f7582267339530f4d8f3c068ddb6a0bc, type: 3}
       propertyPath: randomPointDistance
-      value: 100
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 7243351557101919350, guid: f7582267339530f4d8f3c068ddb6a0bc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -412,6 +412,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PrototypeMap
       objectReference: {fileID: 0}
+    - target: {fileID: 3794954169302928909, guid: fc5a676d2c90b3d4f8a22e369c35950d, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 4603156116648498359, guid: fc5a676d2c90b3d4f8a22e369c35950d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -452,8 +456,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5137043069926549367, guid: fc5a676d2c90b3d4f8a22e369c35950d, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5317103314229426644, guid: fc5a676d2c90b3d4f8a22e369c35950d, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6755084027253256115, guid: fc5a676d2c90b3d4f8a22e369c35950d, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3794954169302928909, guid: fc5a676d2c90b3d4f8a22e369c35950d, type: 3}
@@ -518,11 +531,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9101699300223614784, guid: 5bbc446e79bcdbb428b194187410a89e, type: 3}
       propertyPath: JumpForce
-      value: 6
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 9101699300223614784, guid: 5bbc446e79bcdbb428b194187410a89e, type: 3}
       propertyPath: moveSpeed
-      value: 5
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9101699300223614784, guid: 5bbc446e79bcdbb428b194187410a89e, type: 3}
+      propertyPath: groundDrag
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

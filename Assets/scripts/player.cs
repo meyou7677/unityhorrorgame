@@ -13,7 +13,7 @@ public class player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        m_torch = GameObject.FindObjectOfType<torch>();
+        m_torch = GameObject.FindFirstObjectByType<torch>();
         m_shootpoint = GameObject.Find("shoot point");
         m_shoottimer = 0;
     }

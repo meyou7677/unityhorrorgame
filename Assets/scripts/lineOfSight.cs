@@ -24,6 +24,7 @@ public class lineOfSight : MonoBehaviour
     public RaycastHit? Castray()
     {
         Vector3 direction = player.transform.position - transform.position;
+        Debug.DrawRay(transform.position, direction.normalized * sightDistance, Color.red);
         if (Physics.Raycast(transform.position, direction.normalized, out RaycastHit hitInfo, sightDistance, groundMask))
         {
            return hitInfo;

@@ -18,9 +18,12 @@ public class wolfenemy : MonoBehaviour
     public float health;
     private bool hasdied = false;
     private NavMeshAgent m_NavMeshAgent;
+    public float min_range;
+    public float max_range;
+    private Vector3 invesLocation;
     public enum enemyStates 
     {
-        chase, patrol, attack, die
+        chase, patrol, attack, die, investigate
     }
     public enemyStates enemyState = enemyStates.patrol;
     
@@ -52,6 +55,10 @@ public class wolfenemy : MonoBehaviour
             case enemyStates.die:
                 DieState();
                 break;
+            case enemyStates.investigate:
+                InvestigateState();
+                break;
+
         }
         
         
@@ -75,8 +82,10 @@ public class wolfenemy : MonoBehaviour
             Debug.Log(HitInfo.Value.collider.gameObject.name);
             if (HitInfo.Value.collider.gameObject.tag != "Player")
             {
+                Debug.Log("Ivestigating");
                 animator.SetTrigger("walk");
-                enemyState = enemyStates.patrol;
+                invesLocation = myplayer.transform.position;
+                enemyState = enemyStates.investigate;
                 return;
             }
         }
@@ -87,9 +96,11 @@ public class wolfenemy : MonoBehaviour
         {
             if (newdirection.magnitude > raycastPoint.sightDistance * 1.5)
             {
+                Debug.Log("Ivestigating");
                 randomPoint = null;
+                invesLocation = myplayer.transform.position;
                 animator.SetTrigger("walk");
-                enemyState = enemyStates.patrol;
+                enemyState = enemyStates.investigate;
             }
             Vector3 target = transform.position + newdirection;
             transform.LookAt(target);
@@ -110,13 +121,20 @@ public class wolfenemy : MonoBehaviour
 
         if (randomPoint == null)
         {
-            
-            randomPoint = new Vector3(Random.Range(20, randomPointDistance), 0, Random.Range(20, randomPointDistance));
+            float range = Random.Range(min_range, max_range); 
+            randomPoint = transform.position + Random.insideUnitSphere * range;
+            //randomPoint = new Vector3(Random.Range(20, randomPointDistance), 0, Random.Range(20, randomPointDistance));
             NavMeshHit hit;
-            NavMesh.SamplePosition(randomPoint.Value, out hit, 1000, 1);
+            bool value = NavMesh.SamplePosition(randomPoint.Value, out hit, range, 1);
+            while (!value)
+            {
+                value = NavMesh.SamplePosition(randomPoint.Value, out hit, range, 1);
+                Debug.Log("Couldn't find position");
+            }
             randomPoint = hit.position;
             m_NavMeshAgent.SetDestination(randomPoint.Value);
             Debug.Log("Destination set " + randomPoint.Value);
+
         }
         else
         {
@@ -125,7 +143,8 @@ public class wolfenemy : MonoBehaviour
             Vector3 direction = randomPoint.Value - transform.position;
            Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
            Vector3 target = transform.position + newdirection;
-           //transform.LookAt(target);
+            //transform.LookAt(target);
+            Debug.DrawLine(transform.position, randomPoint.Value);
            //rb.AddForce(newdirection.normalized * walking_speed, ForceMode.Impulse);
            //SpeedControl();
             if (direction.magnitude < 0.5)
@@ -179,6 +198,26 @@ public class wolfenemy : MonoBehaviour
             m_NavMeshAgent.isStopped = true;
         }
         
+    }
+
+    private void InvestigateState()
+    {
+        Debug.DrawLine(transform.position, invesLocation);
+        m_NavMeshAgent.SetDestination(invesLocation);
+        RaycastHit? HitInfo = raycastPoint.Castray();
+        if (HitInfo != null)
+        {
+
+            if (HitInfo.Value.collider.gameObject.tag == "Player")
+            {
+                Vector3 direction = myplayer.transform.position - transform.position;
+                randomPoint = null;
+                animator.SetTrigger("chase");
+                m_NavMeshAgent.SetDestination(myplayer.transform.position);
+                enemyState = enemyStates.chase;
+            }
+        }
+
     }
 
     private void OnDrawGizmos()
