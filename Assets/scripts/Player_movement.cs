@@ -18,6 +18,7 @@ public class Player_movement : MonoBehaviour
     public bool _isGrounded;
     private Vector3 _moveDirection;
     private Rigidbody _rb;
+    
     // Start is called before the first frame update
     void Start()
     {

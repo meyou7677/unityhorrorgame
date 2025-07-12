@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class player : MonoBehaviour
@@ -10,12 +11,16 @@ public class player : MonoBehaviour
     public float bulletSpeed;
     private float m_shoottimer;
     public float shootcooldown;
+    public int number_of_scraps = 0;
+    private TextMeshProUGUI m_textMeshProUGUI;
     // Start is called before the first frame update
     void Start()
     {
         m_torch = GameObject.FindFirstObjectByType<torch>();
         m_shootpoint = GameObject.Find("shoot point");
         m_shoottimer = 0;
+        m_textMeshProUGUI = GameObject.Find("message").GetComponent<TextMeshProUGUI>();
+        
     }
 
     // Update is called once per frame
@@ -46,7 +51,16 @@ public class player : MonoBehaviour
             other.gameObject.SetActive(false);
             m_torch.battery_energy = m_torch.max_energy;
         }
+        if(other.tag == "scrap")
+        {
+            number_of_scraps++;
+            other.gameObject.SetActive(false);
+            if (number_of_scraps >= 3)
+            {
+                m_textMeshProUGUI.text = "Gun is now craftable.";
+            }
 
+        }
     }
 
     private void OnTriggerExit(Collider other)

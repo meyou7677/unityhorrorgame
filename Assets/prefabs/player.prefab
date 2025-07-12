@@ -152,7 +152,6 @@ GameObject:
   - component: {fileID: 4882338353709539196}
   - component: {fileID: 6918611027372764871}
   - component: {fileID: 9101699300223614784}
-  - component: {fileID: 1477877070734949468}
   - component: {fileID: 2148095141965965344}
   m_Layer: 3
   m_Name: player
@@ -227,29 +226,6 @@ MonoBehaviour:
     m_Bits: 64
   orientation: {fileID: 2869405335619806636}
   _isGrounded: 0
---- !u!136 &1477877070734949468
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1698754491753242394}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2148095141965965344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,6 +241,7 @@ MonoBehaviour:
   bullet_prefab: {fileID: 6685220458054937860, guid: 5ceb160414471784191f059c4048c190, type: 3}
   bulletSpeed: 500
   shootcooldown: 1.5
+  number_of_scraps: 0
 --- !u!1 &7082936723217776445
 GameObject:
   m_ObjectHideFlags: 0

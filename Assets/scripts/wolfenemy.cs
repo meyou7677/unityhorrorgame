@@ -21,6 +21,8 @@ public class wolfenemy : MonoBehaviour
     public float min_range;
     public float max_range;
     private Vector3 invesLocation;
+    private float timer;
+    private bool timer_started = false;
     public enum enemyStates 
     {
         chase, patrol, attack, die, investigate
@@ -215,9 +217,29 @@ public class wolfenemy : MonoBehaviour
                 animator.SetTrigger("chase");
                 m_NavMeshAgent.SetDestination(myplayer.transform.position);
                 enemyState = enemyStates.chase;
+                
             }
         }
-
+        if (m_NavMeshAgent.remainingDistance <= 0.01)
+        {
+            m_NavMeshAgent.isStopped = true;
+         //if (!timer_started)
+         //{
+         //    timer = 2;
+         //    timer_started = true;
+         //}
+         //
+         //while (timer >= 0 && timer_started)
+         //{
+         //    timer -= Time.deltaTime;
+         //}
+         //if (timer < 0 && timer_started)
+         //{
+         //    timer_started = false;
+            enemyState = enemyStates.patrol;
+         //}
+            
+        }
     }
 
     private void OnDrawGizmos()
@@ -248,4 +270,9 @@ public class wolfenemy : MonoBehaviour
 
         }
     }
+
+    //private IEnumerator delayed_patrol()
+    //{
+
+    //}
 }
