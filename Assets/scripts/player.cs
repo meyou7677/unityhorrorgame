@@ -12,14 +12,20 @@ public class player : MonoBehaviour
     private float m_shoottimer;
     public float shootcooldown;
     public int number_of_scraps = 0;
-    private TextMeshProUGUI m_textMeshProUGUI;
+    private uimessage m_uimessage;
+    private canvasmanager m_canvasmanager;
+    private bool m_gunready = false;
+    private GameObject m_gun;
     // Start is called before the first frame update
     void Start()
     {
         m_torch = GameObject.FindFirstObjectByType<torch>();
         m_shootpoint = GameObject.Find("shoot point");
         m_shoottimer = 0;
-        m_textMeshProUGUI = GameObject.Find("message").GetComponent<TextMeshProUGUI>();
+        m_uimessage = GameObject.Find("message").GetComponent<uimessage>();
+        m_canvasmanager = GameObject.Find("Canvas").GetComponent<canvasmanager>();
+        m_gun = transform.Find("CameraHolder/Main Camera/gun").gameObject;
+        m_gun.SetActive(false);
         
     }
 
@@ -30,7 +36,7 @@ public class player : MonoBehaviour
         {
             m_shoottimer -= Time.deltaTime;
         }
-        if (Input.GetMouseButtonDown(0) && m_shoottimer <= 0)
+        if (Input.GetMouseButtonDown(0) && m_shoottimer <= 0 && m_gunready)
         {
             m_shoottimer = shootcooldown;
             GameObject b = GameObject.Instantiate(bullet_prefab);
@@ -54,18 +60,23 @@ public class player : MonoBehaviour
         if(other.tag == "scrap")
         {
             number_of_scraps++;
+            m_canvasmanager.updatescrapcount(number_of_scraps);
             other.gameObject.SetActive(false);
             if (number_of_scraps >= 3)
             {
-                m_textMeshProUGUI.text = "Gun is now craftable.";
+                m_uimessage.display_message("Gun is now craftable", 3);
+                m_gunready = true;
+                m_gun.SetActive(true);
             }
 
         }
+        Debug.Log("colliding with " + other.name);
     }
+
 
     private void OnTriggerExit(Collider other)
     {
-       
+        Debug.Log("moved away from " + other.name);
     }
 
     private void OnTriggerStay(Collider other)
