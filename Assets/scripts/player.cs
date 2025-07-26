@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,11 +12,15 @@ public class player : MonoBehaviour
     public float bulletSpeed;
     private float m_shoottimer;
     public float shootcooldown;
-    public int number_of_scraps = 0;
+    private int number_of_scraps = 0;
     private uimessage m_uimessage;
     private canvasmanager m_canvasmanager;
     private bool m_gunready = false;
     private GameObject m_gun;
+    private float m_Crafting_timer;
+    public float crafting_time_seconds;
+    public int scraps_required;
+    public bool IsPlayerCrafting { get; private set; }
     // Start is called before the first frame update
     void Start()
     {
@@ -62,25 +67,64 @@ public class player : MonoBehaviour
             number_of_scraps++;
             m_canvasmanager.updatescrapcount(number_of_scraps);
             other.gameObject.SetActive(false);
-            if (number_of_scraps >= 3)
+            if (IsGunCraftable())
             {
                 m_uimessage.display_message("Gun is now craftable", 3);
-                m_gunready = true;
-                m_gun.SetActive(true);
+                
             }
 
         }
-        Debug.Log("colliding with " + other.name);
+        if(other.tag == "crafting table")
+        {
+            if (IsGunCraftable())
+            {
+                m_uimessage.display_message("Hold E for " +crafting_time_seconds + " seconds.", 3);
+            }
+            
+            m_Crafting_timer = 0;
+        }
+        
     }
 
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("moved away from " + other.name);
+
+        if (other.tag == "crafting table")
+        {
+            m_Crafting_timer = 0;
+        }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        
+        if (other.tag == "crafting table" && IsGunCraftable())
+        {
+            
+            if (Input.GetKey(KeyCode.E))
+            {
+                IsPlayerCrafting = true;
+                m_Crafting_timer += Time.deltaTime;
+                if (m_Crafting_timer > crafting_time_seconds)
+                {
+                    m_gunready = true;
+                    m_gun.SetActive(true);
+                    number_of_scraps -= scraps_required;
+                    m_canvasmanager.updatescrapcount(number_of_scraps);
+                }
+                
+            }
+            if (Input.GetKeyUp(KeyCode.E))
+            {
+                IsPlayerCrafting = false;
+                m_Crafting_timer = 0;
+
+            }
+            Debug.Log(m_Crafting_timer);
+        }
+    }
+    private bool IsGunCraftable()
+    {
+        return number_of_scraps >= scraps_required;
     }
 }

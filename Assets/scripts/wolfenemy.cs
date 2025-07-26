@@ -23,6 +23,7 @@ public class wolfenemy : MonoBehaviour
     private Vector3 invesLocation;
     private float timer;
     private bool timer_started = false;
+    private player m_playerScript;
     public enum enemyStates 
     {
         chase, patrol, attack, die, investigate
@@ -37,6 +38,7 @@ public class wolfenemy : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         raycastPoint = GetComponentInChildren<lineOfSight>();
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
+        m_playerScript = myplayer.GetComponent<player>();
     }
 
     // Update is called once per frame
@@ -106,8 +108,6 @@ public class wolfenemy : MonoBehaviour
             }
             Vector3 target = transform.position + newdirection;
             transform.LookAt(target);
-            //rb.AddForce(newdirection.normalized * running_speed, ForceMode.Impulse);
-            //SpeedControl();
             
         
         }
@@ -125,7 +125,6 @@ public class wolfenemy : MonoBehaviour
         {
             float range = Random.Range(min_range, max_range); 
             randomPoint = transform.position + Random.insideUnitSphere * range;
-            //randomPoint = new Vector3(Random.Range(20, randomPointDistance), 0, Random.Range(20, randomPointDistance));
             NavMeshHit hit;
             bool value = NavMesh.SamplePosition(randomPoint.Value, out hit, range, 1);
             while (!value)
@@ -145,10 +144,7 @@ public class wolfenemy : MonoBehaviour
             Vector3 direction = randomPoint.Value - transform.position;
            Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
            Vector3 target = transform.position + newdirection;
-            //transform.LookAt(target);
             Debug.DrawLine(transform.position, randomPoint.Value);
-           //rb.AddForce(newdirection.normalized * walking_speed, ForceMode.Impulse);
-           //SpeedControl();
             if (direction.magnitude < 0.5)
             {
                 randomPoint = null;
@@ -168,6 +164,11 @@ public class wolfenemy : MonoBehaviour
                 m_NavMeshAgent.SetDestination(myplayer.transform.position);
                 enemyState = enemyStates.chase;
             }
+        }
+        if (m_playerScript.IsPlayerCrafting)
+        {
+            invesLocation = myplayer.transform.position;
+            enemyState = enemyStates.investigate;
         }
     }
 
@@ -223,21 +224,7 @@ public class wolfenemy : MonoBehaviour
         if (m_NavMeshAgent.remainingDistance <= 0.01)
         {
             m_NavMeshAgent.isStopped = true;
-         //if (!timer_started)
-         //{
-         //    timer = 2;
-         //    timer_started = true;
-         //}
-         //
-         //while (timer >= 0 && timer_started)
-         //{
-         //    timer -= Time.deltaTime;
-         //}
-         //if (timer < 0 && timer_started)
-         //{
-         //    timer_started = false;
             enemyState = enemyStates.patrol;
-         //}
             
         }
     }
