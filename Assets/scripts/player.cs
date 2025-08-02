@@ -20,6 +20,7 @@ public class player : MonoBehaviour
     private float m_Crafting_timer;
     public float crafting_time_seconds;
     public int scraps_required;
+    public bool IsCraftingFinished = false;
     public bool IsPlayerCrafting { get; private set; }
     // Start is called before the first frame update
     void Start()
@@ -111,6 +112,7 @@ public class player : MonoBehaviour
                     m_gun.SetActive(true);
                     number_of_scraps -= scraps_required;
                     m_canvasmanager.updatescrapcount(number_of_scraps);
+                    IsCraftingFinished = true;
                 }
                 
             }

@@ -23,9 +23,10 @@ public class wolfenemy : MonoBehaviour
     public float max_range;
     private Vector3 invesLocation;
     private float timer;
-    private bool timer_started = false;
     private player m_playerScript;
     public bool m_isChaseSequence = false;
+    private GameObject obstacles;
+    
     public enum enemyStates 
     {
         chase, patrol, attack, die, investigate
@@ -41,6 +42,8 @@ public class wolfenemy : MonoBehaviour
         raycastPoint = GetComponentInChildren<lineOfSight>();
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
         m_playerScript = myplayer.GetComponent<player>();
+        obstacles = GameObject.FindGameObjectWithTag("crate");
+        obstacles.SetActive(false); 
     }
 
     // Update is called once per frame
@@ -72,7 +75,11 @@ public class wolfenemy : MonoBehaviour
 
         }
         
-        
+        if (m_playerScript.IsCraftingFinished)
+        {
+            m_isChaseSequence = true;
+            obstacles.SetActive(true);
+        }
 
     }
   
