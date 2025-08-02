@@ -7,6 +7,7 @@ TagManager:
   - battery
   - bullet
   - scrap
+  - crafting table
   layers:
   - Default
   - TransparentFX

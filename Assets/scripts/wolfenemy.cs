@@ -10,6 +10,7 @@ public class wolfenemy : MonoBehaviour
     Rigidbody rb;
     public float walking_speed;
     public float running_speed;
+    public float speed_multiplier;
     private GameObject myplayer;
     public float attackD;
     public float randomPointDistance;
@@ -24,6 +25,7 @@ public class wolfenemy : MonoBehaviour
     private float timer;
     private bool timer_started = false;
     private player m_playerScript;
+    public bool m_isChaseSequence = false;
     public enum enemyStates 
     {
         chase, patrol, attack, die, investigate
@@ -42,6 +44,11 @@ public class wolfenemy : MonoBehaviour
     }
 
     // Update is called once per frame
+
+    private void Awake()
+    {
+        
+    }
     void Update()
     {
         
@@ -68,23 +75,18 @@ public class wolfenemy : MonoBehaviour
         
 
     }
-    private void SpeedControl()
-    {
-        var velocity = rb.linearVelocity;
-        var flatVelocity = new Vector3(velocity.x, 0f, velocity.z);
-        if (!(flatVelocity.magnitude > walking_speed)) return;
-        var limitedVelocity = flatVelocity.normalized * walking_speed;
-        rb.linearVelocity = new Vector3(limitedVelocity.x, rb.linearVelocity.y, limitedVelocity.z);
-    }
+  
 
     private void ChaseState()
     {
+        m_NavMeshAgent.speed = running_speed;
         m_NavMeshAgent.SetDestination(myplayer.transform.position);
         RaycastHit? HitInfo = raycastPoint.Castray();
         if (HitInfo != null)
         {
             Debug.Log(HitInfo.Value.collider.gameObject.name);
-            if (HitInfo.Value.collider.gameObject.tag != "Player")
+            
+            if (HitInfo.Value.collider.gameObject.tag != "Player" && !m_isChaseSequence)
             {
                 Debug.Log("Ivestigating");
                 animator.SetTrigger("walk");
@@ -96,9 +98,9 @@ public class wolfenemy : MonoBehaviour
         Vector3 direction = myplayer.transform.position - transform.position;
         Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
         
-        if (newdirection.magnitude > attackD) 
+        if (newdirection.magnitude > attackD ) 
         {
-            if (newdirection.magnitude > raycastPoint.sightDistance * 1.5)
+            if (newdirection.magnitude > raycastPoint.sightDistance * 1.5 && !m_isChaseSequence)
             {
                 Debug.Log("Ivestigating");
                 randomPoint = null;
@@ -120,7 +122,8 @@ public class wolfenemy : MonoBehaviour
 
     private void PatrolState()
     {
-
+        
+        m_NavMeshAgent.speed = walking_speed;
         if (randomPoint == null)
         {
             float range = Random.Range(min_range, max_range); 
@@ -135,12 +138,13 @@ public class wolfenemy : MonoBehaviour
             randomPoint = hit.position;
             m_NavMeshAgent.SetDestination(randomPoint.Value);
             Debug.Log("Destination set " + randomPoint.Value);
+           
 
         }
         else
         {
             
-           
+           m_NavMeshAgent.isStopped = false;
             Vector3 direction = randomPoint.Value - transform.position;
            Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
            Vector3 target = transform.position + newdirection;
@@ -174,13 +178,14 @@ public class wolfenemy : MonoBehaviour
 
     private void AttackState()
     {
-       
+
+        m_NavMeshAgent.isStopped = true;
         Vector3 direction = myplayer.transform.position - transform.position;
         Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
         if (newdirection.magnitude > attackD)
         {
             enemyState = enemyStates.chase;
-            
+            m_NavMeshAgent.isStopped = false;
             animator.SetTrigger("chase");
 
         }
@@ -205,6 +210,7 @@ public class wolfenemy : MonoBehaviour
 
     private void InvestigateState()
     {
+        m_NavMeshAgent.speed = walking_speed;
         Debug.DrawLine(transform.position, invesLocation);
         m_NavMeshAgent.SetDestination(invesLocation);
         RaycastHit? HitInfo = raycastPoint.Castray();
