@@ -32,7 +32,26 @@ public class wolfenemy : MonoBehaviour
         chase, patrol, attack, die, investigate
     }
     public enemyStates enemyState = enemyStates.patrol;
-    
+
+    private void OnEnable()
+    {
+        
+    }
+
+    private void OnDisable()
+    {
+        m_playerScript.OnCraftingFinished -= M_playerScript_OnCraftingFinished;
+    }
+
+    private void M_playerScript_OnCraftingFinished()
+    {
+        Debug.Log("Chase started");
+        m_isChaseSequence = true;
+        obstacles.SetActive(true);
+        m_NavMeshAgent.Warp(new Vector3(-10, 2.17f, -13.59f));
+        transform.rotation = Quaternion.Euler(0, 90, 0);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +62,8 @@ public class wolfenemy : MonoBehaviour
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
         m_playerScript = myplayer.GetComponent<player>();
         obstacles = GameObject.FindGameObjectWithTag("crate");
-        obstacles.SetActive(false); 
+        obstacles.SetActive(false);
+        m_playerScript.OnCraftingFinished += M_playerScript_OnCraftingFinished;
     }
 
     // Update is called once per frame
@@ -77,8 +97,7 @@ public class wolfenemy : MonoBehaviour
         
         if (m_playerScript.IsCraftingFinished)
         {
-            m_isChaseSequence = true;
-            obstacles.SetActive(true);
+            
         }
 
     }

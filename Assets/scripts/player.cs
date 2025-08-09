@@ -21,6 +21,9 @@ public class player : MonoBehaviour
     public float crafting_time_seconds;
     public int scraps_required;
     public bool IsCraftingFinished = false;
+    public delegate void OnCraftingFinishedDelegate();
+    public event OnCraftingFinishedDelegate OnCraftingFinished;
+    
     public bool IsPlayerCrafting { get; private set; }
     // Start is called before the first frame update
     void Start()
@@ -32,6 +35,8 @@ public class player : MonoBehaviour
         m_canvasmanager = GameObject.Find("Canvas").GetComponent<canvasmanager>();
         m_gun = transform.Find("CameraHolder/Main Camera/gun").gameObject;
         m_gun.SetActive(false);
+        
+        
         
     }
 
@@ -113,6 +118,8 @@ public class player : MonoBehaviour
                     number_of_scraps -= scraps_required;
                     m_canvasmanager.updatescrapcount(number_of_scraps);
                     IsCraftingFinished = true;
+                    OnCraftingFinished();
+                    
                 }
                 
             }
