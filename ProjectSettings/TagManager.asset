@@ -9,6 +9,7 @@ TagManager:
   - scrap
   - crafting table
   - crate
+  - garage
   layers:
   - Default
   - TransparentFX

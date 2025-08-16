@@ -23,6 +23,7 @@ public class player : MonoBehaviour
     public bool IsCraftingFinished = false;
     public delegate void OnCraftingFinishedDelegate();
     public event OnCraftingFinishedDelegate OnCraftingFinished;
+    private int m_ammo_count = 0;
     
     public bool IsPlayerCrafting { get; private set; }
     // Start is called before the first frame update
@@ -47,7 +48,7 @@ public class player : MonoBehaviour
         {
             m_shoottimer -= Time.deltaTime;
         }
-        if (Input.GetMouseButtonDown(0) && m_shoottimer <= 0 && m_gunready)
+        if (Input.GetMouseButtonDown(0) && m_shoottimer <= 0 && m_gunready && m_ammo_count > 0)
         {
             m_shoottimer = shootcooldown;
             GameObject b = GameObject.Instantiate(bullet_prefab);
@@ -57,6 +58,8 @@ public class player : MonoBehaviour
             {
                 bc.Initialize();
                 bc.shoot(Camera.main.transform.forward, bulletSpeed);
+                m_ammo_count -= 1;
+                m_canvasmanager.updateammocount(m_ammo_count);
             }
         }
     }
@@ -68,7 +71,7 @@ public class player : MonoBehaviour
             other.gameObject.SetActive(false);
             m_torch.battery_energy = m_torch.max_energy;
         }
-        if(other.tag == "scrap")
+        else if(other.tag == "scrap")
         {
             number_of_scraps++;
             m_canvasmanager.updatescrapcount(number_of_scraps);
@@ -80,7 +83,7 @@ public class player : MonoBehaviour
             }
 
         }
-        if(other.tag == "crafting table")
+        else if(other.tag == "crafting table")
         {
             if (IsGunCraftable())
             {
@@ -90,6 +93,12 @@ public class player : MonoBehaviour
             m_Crafting_timer = 0;
         }
         
+        else if(other.tag == "ammo box")
+        {
+            m_ammo_count += 10;
+            m_canvasmanager.updateammocount(m_ammo_count);
+            other.gameObject.SetActive(false);
+        }
     }
 
 
@@ -115,6 +124,7 @@ public class player : MonoBehaviour
                 {
                     m_gunready = true;
                     m_gun.SetActive(true);
+                    m_canvasmanager.updateammocount(m_ammo_count);
                     number_of_scraps -= scraps_required;
                     m_canvasmanager.updatescrapcount(number_of_scraps);
                     IsCraftingFinished = true;

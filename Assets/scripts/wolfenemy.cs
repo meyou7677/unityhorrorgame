@@ -205,6 +205,11 @@ public class wolfenemy : MonoBehaviour
     private void AttackState()
     {
 
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (!stateInfo.IsName("attack2"))
+        {
+            animator.SetTrigger("attack");
+        }
         m_NavMeshAgent.isStopped = true;
         Vector3 direction = myplayer.transform.position - transform.position;
         Vector3 newdirection = new Vector3(direction.x, 0, direction.z);
